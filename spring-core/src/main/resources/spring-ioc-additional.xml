@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:annotation-config/>
+
+    <!--Msg Source-->
+    <bean id="messageSource"
+          class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basenames">
+            <list>
+                <value>msg.format</value>
+                <value>msg.exceptions</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="example" class="org.manlier.core.additional.Example">
+        <property name="messages" ref="messageSource"/>
+    </bean>
+
+    <bean id="msgAware" class="org.manlier.core.additional.MsgAware"/>
+
+    <!--Event -->
+    <bean id="emailService" class="org.manlier.core.additional.event.EmailService">
+        <property name="blackList">
+            <list>
+                <value>known.spammer@example.org</value>
+                <value>known.hacker@example.org</value>
+                <value>john.doe@example.org</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="blackListNotifier" class="org.manlier.core.additional.event.BlackListNotifier">
+        <property name="notificationAddress" value="blacklist@example.org"/>
+    </bean>
+
+    <!--# Generic event-->
+    <bean id="entityService" class="org.manlier.core.additional.event.EntityService"/>
+    <bean id="entityCreateNotifier" class="org.manlier.core.additional.event.EntityCreateNotifier"/>
+</beans>

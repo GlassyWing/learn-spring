@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/aop
+       http://www.springframework.org/schema/aop/spring-aop.xsd
+       ">
+
+    <context:aspectj-autoproxy/>
+
+    <bean id="dao" class="com.xyz.someapp.dao.sub.DaoImpl"/>
+
+    <bean id="beforeExampleBean" class="org.manlier.aop.aspect.BeforeExample"/>
+    <bean id="afterReturningExampleBean" class="org.manlier.aop.aspect.AfterReturningExample"/>
+    <bean id="afterThrowingExampleBean" class="org.manlier.aop.aspect.AfterThrowingExample"/>
+    <bean id="afterFinallyExampleBean" class="org.manlier.aop.aspect.AfterFinallyExample"/>
+
+    <bean id="paramBindingAspectBean" class="org.manlier.aop.aspect.ParamBindingAspect"/>
+
+    <aop:config>
+        <aop:aspect id="beforeExample" ref="beforeExampleBean">
+            <aop:before pointcut="execution(* com.xyz.someapp.dao.*.*(..))"
+                        method="doAccessCheck"/>
+        </aop:aspect>
+        <aop:aspect id="afterReturningExample" ref="afterReturningExampleBean">
+            <aop:after-returning method="doAccessCheck"
+                                 pointcut="execution(String com.xyz.someapp.dao.*.*(..))"
+                                 returning="retVal"/>
+        </aop:aspect>
+        <aop:aspect id="afterThrowingExample" ref="afterThrowingExampleBean">
+            <aop:after-throwing method="doRecoveryActions"
+                                pointcut="execution(* com.xyz.someapp.dao.*.*(..))"
+                                throwing="ex"/>
+        </aop:aspect>
+        <aop:aspect id="afterFinallyExample" ref="afterFinallyExampleBean">
+            <aop:after method="doReleaseLock"
+                       pointcut="execution(* com.xyz.someapp.dao.*.*(..))"/>
+        </aop:aspect>
+        <aop:aspect id="paramBinding" ref="paramBindingAspectBean">
+            <aop:before pointcut="execution(* com.xyz.someapp.dao.*.*.aMethod(..)) and @annotation(auditable)"
+                        method="audit"
+                        arg-names="auditable"/>
+        </aop:aspect>
+    </aop:config>
+
+    <bean id="profiler" class="x.y.SimpleProfiler"/>
+
+    <bean id="fooService" class="x.y.service.DefaultFooService"/>
+
+    <aop:config>
+        <aop:aspect ref="profiler">
+            <aop:pointcut id="theExecutionOfSomeFooServiceMethod"
+                          expression="execution(* x.y.service.FooService.getFoo(String,int))
+                and args(name, age)"/>
+            <aop:around method="profile"
+                        pointcut-ref="theExecutionOfSomeFooServiceMethod"
+                        />
+        </aop:aspect>
+    </aop:config>
+</beans>

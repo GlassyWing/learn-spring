@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation=" http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/mvc
+       http://www.springframework.org/schema/mvc/spring-mvc.xsd">
+
+    <bean class="org.manlier.propertyeditor.DependsOnExoticType">
+        <property name="type" value="hello everyone"/>
+    </bean>
+
+    <!--property editor-->
+    <!--<bean class="org.springframework.beans.factory.config.CustomEditorConfigurer">-->
+    <!--<property name="propertyEditorRegistrars">-->
+    <!--<list>-->
+    <!--<ref bean="customPropertyEditorRegistrar"/>-->
+    <!--</list>-->
+    <!--</property>-->
+    <!--</bean>-->
+
+    <!--<bean id="customPropertyEditorRegistrar" class="org.manlier.propertyeditor.CustomPropertyEditorRegistrar"/>-->
+
+    <!--converter-->
+    <bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <property name="converters">
+            <set>
+                <ref bean="myCustomConverter"/>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="myCustomConverter" class="org.manlier.convert.MyCustomConverter"/>
+
+    <!--formatter-->
+    <!--<mvc:annotation-driven conversion-service="formattingConversionService"/>-->
+    <!--<bean id="formattingConversionService"-->
+          <!--class="org.springframework.format.support.FormattingConversionServiceFactoryBean">-->
+        <!--<property name="converters">-->
+            <!--<set>-->
+
+            <!--</set>-->
+        <!--</property>-->
+        <!--<property name="formatters">-->
+            <!--<set>-->
+
+            <!--</set>-->
+        <!--</property>-->
+        <!--<property name="formatterRegistrars">-->
+            <!--<set>-->
+
+            <!--</set>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--validator-->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
+
+    <bean id="personService" class="org.manlier.validation.biz.MyService"/>
+
+    <bean id="person" class="org.manlier.validation.entities.PersonForm">
+        <property name="age" value="-1"/>
+    </bean>
+
+</beans>

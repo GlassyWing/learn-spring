@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd"
+       default-init-method="init" default-destroy-method="destroy">
+
+    <!--lookup method-->
+    <bean id="command" class="org.manlier.core.ioc.lookup.Command" scope="prototype"/>
+
+    <bean id="commandManager" class="org.manlier.core.ioc.lookup.CommandManager">
+        <lookup-method name="createCommand" bean="command"/>
+    </bean>
+
+    <!--1. Arbitrary method replacement-->
+    <bean id="myValueCalculator" class="org.manlier.core.ioc.methodreplacement.MyValueCalculator">
+        <replaced-method name="computeValue" replacer="replacementComputeValue">
+            <arg-type>String</arg-type>
+        </replaced-method>
+    </bean>
+    <bean id="replacementComputeValue" class="org.manlier.core.ioc.methodreplacement.ReplacementComputeValue"/>
+
+    <!--2. Customizing the nature of a bean-->
+    <!--<bean id="blogService" class="org.manlier.core.ioc.beannature.DefaultBlogService">-->
+    <!--</bean>-->
+
+    <!--3. Life cycle-->
+    <bean id="life" class="org.manlier.core.ioc.lifecycle.LifeCycleNature"/>
+
+    <!--4. Bean definition inheritance-->
+    <bean id="inheritedTestBean" abstract="true">
+        <property name="name" value="parent"/>
+        <property name="age" value="1"/>
+    </bean>
+
+    <bean id="inheritsWithDifferentClass"
+          class="org.manlier.core.ioc.definitionInheritance.DerivedTestBean"
+            parent="inheritedTestBean">
+        <property name="name" value="override"/>
+    </bean>
+
+    <!--5. Post processor-->
+    <bean class="org.manlier.core.ioc.postprocessor.InstantiationTracingBeanPostProcessor"/>
+
+    <!-- # phase test-->
+    <bean id="phaseTest" class="org.manlier.core.ioc.lifecycle.PhaseTest" scope="prototype">
+        <property name="name" value="Halon"/>
+    </bean>
+
+    <!-- # properties override-->
+    <bean id="refer" class="org.manlier.core.ioc.postprocessor.ReferenceProper"/>
+    <bean id="property_override" class="org.manlier.core.ioc.postprocessor.PropertyOverrideTest">
+        <property name="proper" ref="refer"/>
+    </bean>
+    <context:property-override location="classpath:override.properties"/>
+
+    <!--6. Factory Bean-->
+    <bean id="myBean" class="org.manlier.core.ioc.factorybean.MyBeanFactory"/>
+</beans>
